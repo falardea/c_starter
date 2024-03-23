@@ -36,3 +36,7 @@ configure_file("${PROJECT_SOURCE_DIR}/version.h.in" "${PROJECT_SOURCE_DIR}/versi
 add_executable(${PROJECT_TARGET} ${MY_SOURCES})
 
 target_include_directories(${PROJECT_TARGET} PUBLIC "${PROJECT_BINARY_DIR}")
+
+# Let's take a look at testing
+# https://cmake.org/cmake/help/book/mastering-cmake/chapter/Testing%20With%20CMake%20and%20CTest.html
+enable_testing()
