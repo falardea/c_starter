@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include "app_model.h"
+#include "../utils/logging.h"
 
 // Thinking about making this static... would that make it a Singleton?
 // A model interface might be nothing more than setter/getter functions
@@ -28,8 +29,7 @@ APP_RUNTIME_STATE getAppModelRuntimeState(void) {
 void setAppModelDebuggingFlag(bool enable) {
    sAppModel.debuggingEnabled = enable;
    if (enable) {
-      // TODO: set and immediately use log level?
-      printf("Debugging Enabled\n");
+      logging_llprintf(LOGLEVEL_DEBUG, "%s\n", "Debugging Enabled");
    }
 }
 bool getAppModelDebuggingFlag(void) {
@@ -39,8 +39,7 @@ bool getAppModelDebuggingFlag(void) {
 void setAppModelUseTimestampsFlag(bool enable) {
    sAppModel.useTimestamps = enable;
    if (enable) {
-      // TODO: set and immediately use log level?
-      printf("We're going to be a bit more chatty\n");
+      printf("Timestamps Enabled\n");
    }
 }
 bool getAppModelUseTimestampsFlag(void) {

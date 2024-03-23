@@ -12,7 +12,7 @@ int main(int argc, char **argv) {
    {
       logging_llprintf(LOGLEVEL_DEBUG, "application initialized, starting UI\n");
 
-
+      logging_llprintf(LOGLEVEL_DEBUG, "%s: CHECKPOINT \n", __func__);
 
       logging_llprintf(LOGLEVEL_DEBUG, "UI closed, shutting down\n");
    }
