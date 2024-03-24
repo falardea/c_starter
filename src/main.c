@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include <regex.h>
 #include <limits.h>
@@ -9,18 +9,18 @@
 #include "models/app_model.h"
 
 char *search_string[] = {"Date,Ticks,Notes,field1,field2,field3,field4,field5,field6,field7,field8",
-                         "2024-01-23 04:31:12,10,\"aaaddd\",1,1,1,1,1,1,1,8.123\n",
-                         "2024-02-23 05:56:32,11,\"This line in the csv can have commas, and even comma\n",
+                         "2024-01-23 04:31:12,12341,\"aaaddd\",1,1,1,1,1,1,1,8.123\n",
+                         "2024-02-23 05:56:32,12342,\"This line in the csv can have commas, and even comma\n",
                          "\n",
                          "seperated numbers, like: 1,2,3,4,5,a string,and,carriage returns, and more numbers: \n",
-                         "not a date here though\",1,2,2,2,2,2,2,1.8\n",
-                         "2024-03-23 07:17:41,12,\"1,2,3,4\",8,3,3,3,3,3,3,1\n",
-                         "2024-04-23 08:11:34,12,\"some text, no newline\",1,4,4,4,4,4,4,8\n",
-                         "2024-05-23 12:34:57,12,\"\n",
+                         "not a date here though\",1,2,2,2,2,2,2,8.234\n",
+                         "2024-03-23 07:17:41,12343,\"1,2,3,4\",1,3,3,3,3,3,3,8.345\n",
+                         "2024-04-23 08:11:34,12344,\"some text, no newline\",1,4,4,4,4,4,4,8.456\n",
+                         "2024-05-23 12:34:57,12345,\"\n",
                          "some text, but not a newline\n",
-                         "\",8,5,5,5,5,5,5,1\n",
-                         "2024-06-23 14:16:40,12,\"some text, but not a newline\",8,6,6,6,6,6,6,1\n",
-                         "2024-07-23 21:37:04,12,\"some text, but not a newline\",8,7,7,7,7,7,7,1\n"};
+                         "\",1,5,5,5,5,5,5,8.567\n",
+                         "2024-06-23 14:16:40,12346,\"some text, but not a newline\",1,6,6,6,6,6,6,8.678\n",
+                         "2024-07-23 21:37:04,12347,\"some text, but not a newline\",1,7,7,7,7,7,7,8.789\n"};
 
 bool compile_regex(regex_t *re, const char *patt)
 {
@@ -105,10 +105,35 @@ bool parse_psuedo_csv(char *timestamp)
    }
    if (found)
    {
+      char  re_read_timestamp[32];
+      int t,d1,d2,d3,d4,d5,d6,d7;
+      char  notes[10];
+      float f8;
+      sscanf(str_out, "%[^,]19s,%d,%s,%d,%d,%d,%d,%d,%d,%d,%f",
+             re_read_timestamp,&t,notes,&d1,&d2,&d3,&d4,&d5,&d6,&d7,&f8);
       logging_llprintf(LOGLEVEL_DEBUG, "str_out: %s\n", str_out);
+      logging_llprintf(LOGLEVEL_DEBUG, "%s,%d,%s,%d,%d,%d,%d,%d,%d,%d,%0.1f\n",
+                       re_read_timestamp,t,notes,d1,d2,d3,d4,d5,d6,d7,f8);
    }
    regfree(&regx);
    return found;
+}
+
+void temp_test_fscan(void)
+{
+   char *str_out = "2023-01-13 11:16:40,4";
+   char re_read_timestamp[32];
+   char alt_tick[32];
+   unsigned int t;
+   // int read_count = sscanf(str_out, "%s,%s", re_read_timestamp,alt_tick);
+   int read_count = sscanf(str_out, "%[^,]*19s,%d", re_read_timestamp,&t);
+   logging_llprintf(LOGLEVEL_DEBUG, "read count = %d\n", read_count);
+
+   logging_llprintf(LOGLEVEL_DEBUG, "str_out: %s\n", str_out);
+   logging_llprintf(LOGLEVEL_DEBUG, "-------> %s,%d\n",
+                    re_read_timestamp,t);
+   /*logging_llprintf(LOGLEVEL_DEBUG, "-------> %s,%s\n",
+                    re_read_timestamp,alt_tick);*/
 }
 
 int main(int argc, char **argv) {
@@ -132,6 +157,9 @@ int main(int argc, char **argv) {
          logging_llprintf(LOGLEVEL_DEBUG, "Looking for %s\n", date_lookup[i]);
          parse_psuedo_csv(date_lookup[i]);
       }
+
+      temp_test_fscan();
+
    }
    else
    {
